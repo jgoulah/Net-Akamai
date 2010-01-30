@@ -26,6 +26,8 @@ subtest 'run purge' => sub {
 	my $res = $ap->purge();
 
 	ok( $res->successful(), 'purge was successful' );
+
+	done_testing;
 };
 
 done_testing;
