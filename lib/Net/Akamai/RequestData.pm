@@ -25,7 +25,6 @@ akamai login user
 has 'user' => (
 	is => 'rw', 
 	isa => 'Str',
-	required => 1,
 	default => '',
 );
 
@@ -37,7 +36,6 @@ password of the akamai user
 has 'pwd' => (
 	is => 'rw', 
 	isa => 'Str',
-	required => 1,
 	default => '',
 );
 
@@ -49,7 +47,6 @@ akamai network (do not change)
 has 'network' => (
 	is => 'ro', 
 	isa => 'Str',
-	required => 1,
 	default => 'ff',
 );
 
@@ -62,9 +59,8 @@ has 'ptype' => (
 	is => 'ro', 
 	isa => 'Net::Akamai::RequestData::Types::PurgeType',
 	default => 'arl',
-	predicate => 'has_ptype'
+	predicate => 'has_ptype',
 );
-
 
 =head2 action 
 
@@ -75,8 +71,7 @@ has 'action' => (
 	is => 'ro', 
 	isa => 'Net::Akamai::RequestData::Types::PurgeAction',
 	predicate => 'has_action',
-	required => 1,
-	default => 'remove'
+	default => 'remove',
 );
 
 =head2 email 
@@ -88,7 +83,7 @@ has 'email' => (
 	is => 'rw', 
 	isa => 'Str',
 	predicate => 'has_email',
-	default => ''
+	default => '',
 );
 
 =head2 urls 
@@ -104,7 +99,7 @@ has 'urls' => (
 	provides  => {
 		'push' => 'add_url',
 		'pop'  => 'remove_last_url',
-	}
+	},
 );
 
 around 'add_url' => sub { 

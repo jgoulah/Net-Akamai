@@ -1,10 +1,8 @@
 package Net::Akamai;
 
 use Moose;
-use Moose::Util::TypeConstraints;
 
-use Text::Tabs;
-use Digest::MD5 qw(md5_base64);
+use Moose::Util::TypeConstraints;
 use SOAP::Lite;
 use Net::Akamai::RequestData;
 use Net::Akamai::ResponseData;
@@ -16,14 +14,21 @@ Net::Akamai - Utility to interface with Akamai's API
 =head1 SYNOPSIS
 
  my $data = new Net::Akamai::RequestData(
- 	email=>'my@email.com', 
+	email=>'my@email.com', 
 	user => 'myuser', 
 	pwd => 'mypass'
  );
  $data->add_url('http://www.myurl.com');
  $data->add_url('http://www.myurl.com/somethingelse');
  my $ap = new Net::Akamai(req_data=>$data);
- $ap->purge;
+ my $res = $ap->purge;
+ 
+ if (!$res->accepted) {
+	die "$res";
+ }
+ elsif ($res->warning) {
+	warn "$res";
+ }
 
 =head1 DESCRIPTION
 
@@ -46,7 +51,6 @@ has 'soap_version' => (
 	is => 'ro', 
 	isa => 'Str',
 	default => sub { SOAP::Lite->VERSION },
-	required => 1
 );
 
 =head2 proxy 
@@ -57,8 +61,7 @@ akamai purge proxy
 has 'proxy' => (
 	is => 'ro',
 	isa => 'Str',
-	required => 1,
-	default => 'https://ccuapi.akamai.com:443/soap/servlet/soap/purge'
+	default => 'https://ccuapi.akamai.com:443/soap/servlet/soap/purge',
 );
 
 =head2 uri 
@@ -69,8 +72,7 @@ akamai purge uri
 has 'uri' => (
 	is => 'ro',
 	isa => 'Str',
-	required => 1,
-	default => 'http://ccuapi.akamai.com/purge'
+	default => 'http://ccuapi.akamai.com/purge',
 );
 
 =head2 soap 
@@ -81,14 +83,15 @@ SOAP::Lite object
 has 'soap' => (
 	is => 'ro', 
 	isa => 'SOAP::Lite',
-	lazy => 1,
-	required => 1,
-	default => sub {
-		my $self = shift;
-		SOAP::Lite->new(proxy => $self->proxy,
-                           uri => $self->uri);
-	}
+	lazy_build => 1,
 );
+sub _build_soap {
+	my $self = shift;
+	return SOAP::Lite->new(
+		proxy => $self->proxy,
+		uri => $self->uri,
+	);
+}
 
 =head2 req_data 
 
@@ -98,14 +101,14 @@ Net::Akamai::RequestData object to hold data associated with an akamai request
 has 'req_data' => (
 	is => 'ro', 
 	isa => 'Net::Akamai::RequestData',
-	required => 1,
 	handles => [qw/ add_url email user pwd /],
-	default => sub {
-		new Net::Akamai::RequestData();
-	}
+	lazy_build => 1,
 );
+sub _build_req_data {
+	return Net::Akamai::RequestData->new();
+}
 
-=head2 res_data 
+=head2 res_data
 
 Net::Akamai::ResponseData object holds data associated with an akamai response
 
@@ -130,12 +133,12 @@ initiate the purge request
 sub purge {
 	my $self = shift;
 
-	 my $r = $self->soap->purgeRequest(
-			SOAP::Data->name("name" => $self->req_data->user),
-			SOAP::Data->name("pwd" => $self->req_data->pwd),
-			SOAP::Data->name("network" => $self->req_data->network),
-			SOAP::Data->name("opt" => $self->req_data->options),
-			SOAP::Data->name("uri" => $self->req_data->urls)
+	my $r = $self->soap->purgeRequest(
+		SOAP::Data->name("name" => $self->req_data->user),
+		SOAP::Data->name("pwd" => $self->req_data->pwd),
+		SOAP::Data->name("network" => $self->req_data->network),
+		SOAP::Data->name("opt" => $self->req_data->options),
+		SOAP::Data->name("uri" => $self->req_data->urls)
 	);
 
 	# store in response object
@@ -148,15 +151,7 @@ sub purge {
 		result_msg => $res->{resultMsg}, 	
 	});
 
-	# let them know what happened 
-	if ($self->res_data->result_code =~ m/1\d\d/) {
-		print "Purge request completed with message: ". $self->res_data->result_msg ."\n";	
-	} elsif ($self->res_data->result_code =~ m/2\d\d/) {
-		print "Purge request accepted with warning: ". $self->res_data->result_msg ."\n";	
-	} else {
-		# could probably analyse this a bit more, show the bad url, etc
-		print "Purge request failed with error: ". $self->res_data->result_msg ."\n";	
-	}
+	return $self->res_data();
 }
 
 =head1 TODO

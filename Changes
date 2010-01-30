@@ -1,4 +1,7 @@
 
+		- Do not print response status as part of purge().
+		- New methods in the response object for easier handling.
+
 0.12	2008-05-29 
 		- redist due to Makefile.PL corruption in 0.11
 

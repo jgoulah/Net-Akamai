@@ -80,6 +80,69 @@ has 'result_msg' => (
 );
 
 
+=head1 Methods
+
+=head2 successful
+
+Returns true if the result code is of the 1xx (successful) variety.
+
+=cut
+sub successful {
+	my $self = shift;
+	return 1 if $self->result_code() =~ /1\d\d/;
+	return;
+}
+
+=head2 warning
+
+Returns true if the result code is of the 2xx (warning) variety.
+The Akamai documentation states that "The remove request has been
+accepted" even when a warning response is sent.
+
+=cut
+sub warning {
+	my $self = shift;
+	return 1 if $self->result_code() =~ /2\d\d/;
+	return;
+}
+
+=head2 accepted
+
+Returns true if the result code is of the 1xx (successful) or 2xx
+(warning) varieties.  This indicates that the remove request was
+accepted by Akamai.  You should still check to see if there was a
+warning, and if their was report it.
+
+=cut
+sub accepted {
+	my $self = shift;
+	return 1 if $self->successful();
+	return 1 if $self->warning();
+	return;
+}
+
+=head2 message
+
+ if (!$res_data->accepted()) {
+	# These do the same thing:
+	die "$res_data";
+	die $res_data->message();
+ }
+
+Returns a nicely formatted string containing the result_code and result_msg.
+
+=cut
+use overload '""' => \&message, fallback => 1;
+sub message {
+	my $self = shift;
+
+	my $code = $self->result_code();
+	my $message = $self->successful() ? 'SUCCESSFUL'
+	            : $self->warning() ? 'WARNING'
+	            : 'REJECTED';
+
+	return $self->result_code() . " $message: " . $self->result_msg();
+}
 
 =head1 AUTHOR
 

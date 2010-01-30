@@ -1,8 +1,8 @@
 package Net::Akamai::RequestData::Types;
 
 use Moose;
-use MooseX::Types;
 use SOAP::Lite;
+use Moose::Util::TypeConstraints;
 
 =head1 NAME
     
