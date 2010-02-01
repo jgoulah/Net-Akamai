@@ -10,7 +10,14 @@ SYNOPSIS
      $data->add_url('http://www.myurl.com');
      $data->add_url('http://www.myurl.com/somethingelse');
      my $ap = new Net::Akamai(req_data=>$data);
-     $ap->purge;
+     my $res = $ap->purge;
+     
+ if (!$res->accepted) {
+            die "$res";
+     }
+     elsif ($res->warning) {
+            warn "$res";
+     }
 
 DESCRIPTION
     Handles akamai purge request of multiple URLs
@@ -49,6 +56,9 @@ TODO
 
 AUTHOR
     John Goulah <jgoulah@cpan.org>
+
+CONTRIBUTORS
+    Aran Deltac <bluefeet@cpan.org>
 
 LICENSE
     This library is free software, you can redistribute it and/or modify it
