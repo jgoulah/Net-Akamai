@@ -38,7 +38,7 @@ Patches welcome for extra functionality
 
 =cut
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 =head1 Attributes
 
@@ -169,6 +169,10 @@ sub purge {
 =head1 AUTHOR
 
 John Goulah  <jgoulah@cpan.org>
+
+=head1 CONTRIBUTORS 
+
+Aran Deltac <bluefeet@cpan.org>
 
 =head1 LICENSE
 
