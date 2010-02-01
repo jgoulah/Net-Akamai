@@ -25,7 +25,7 @@ akamai login user
 has 'user' => (
 	is => 'rw', 
 	isa => 'Str',
-	default => '',
+	required => 1,
 );
 
 =head2 pwd 
@@ -36,7 +36,7 @@ password of the akamai user
 has 'pwd' => (
 	is => 'rw', 
 	isa => 'Str',
-	default => '',
+	required => 1,
 );
 
 =head2 network 
@@ -83,7 +83,6 @@ has 'email' => (
 	is => 'rw', 
 	isa => 'Str',
 	predicate => 'has_email',
-	default => '',
 );
 
 =head2 urls 
@@ -128,7 +127,7 @@ sub _build_options {
 	my $self = shift;
 	my @ret;
 
-	push @ret, "email-notification=".$self->email;
+	push @ret, "email-notification=".$self->email if $self->has_email;
 	push @ret, "type=".$self->ptype;
 	push @ret, "action=".$self->action;
 	# This terminates this list of options and insures the options array is not null
