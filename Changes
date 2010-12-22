@@ -1,3 +1,6 @@
+0.14    2010-12-22
+        - Fix coercion to work with newest Moose
+
 0.13    2010-02-01
 		- Do not print response status as part of purge().
 		- New methods in the response object for easier handling.
