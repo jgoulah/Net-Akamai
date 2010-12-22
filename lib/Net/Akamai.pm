@@ -108,6 +108,10 @@ sub _build_req_data {
 	return Net::Akamai::RequestData->new();
 }
 
+coerce 'Net::Akamai::ResponseData'
+	=> from 'HashRef'
+	=> via { Net::Akamai::ResponseData->new($_) };
+
 =head2 res_data
 
 Net::Akamai::ResponseData object holds data associated with an akamai response
@@ -119,9 +123,6 @@ has 'res_data' => (
 	coerce    => 1,
 );
 
-coerce 'Net::Akamai::ResponseData'
-	=> from 'HashRef'
-	=> via { Net::Akamai::ResponseData->new($_) };
 
 =head1 Methods 
 
