@@ -42,14 +42,15 @@ coerce 'Net::Akamai::RequestData::Types::PurgeOptionsArrayRef'
 invalidate or remove
 
 =cut
-enum 'Net::Akamai::RequestData::Types::PurgeAction' => qw(invalidate remove);
+enum 'Net::Akamai::RequestData::Types::PurgeAction'
+    => [qw(invalidate remove)];
 
 =head2 Net::Akamai::RequestData::Types::PurgeType 
 
 cpcode or arl
 
 =cut
-enum 'Net::Akamai::RequestData::Types::PurgeType' => qw(cpcode arl);
+enum 'Net::Akamai::RequestData::Types::PurgeType' => [qw(cpcode arl)];
 
 =head1 AUTHOR
 
