@@ -38,7 +38,7 @@ Patches welcome for extra functionality
 
 =cut
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 =head1 Attributes
 

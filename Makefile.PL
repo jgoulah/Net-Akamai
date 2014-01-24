@@ -3,7 +3,7 @@ use inc::Module::Install '0.68';
 name 'Net-Akamai';
 all_from 'lib/Net/Akamai.pm';
 
-requires 'Moose' => '0.45';
+requires 'Moose' => '2.1202';
 requires 'SOAP::Lite' => '0.710.05';
 requires 'Crypt::SSLeay' => '0.57'; # needed for SOAP::Lite https
 requires 'MooseX::AttributeHelpers' => '0.09';
